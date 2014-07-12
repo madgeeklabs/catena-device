@@ -142,6 +142,15 @@ localSecureApp.get('/keys/:key', function (req, res) {
 	res.send(200);
 });
 
+localSecureApp.post('/admin', function (req, res){
+
+	var phone = req.body.phone;
+	var email = req.body.email;
+
+	redisClient.set('admin_phone', phone, redis.print);
+	redisClient.set('admin_email', email, redis.print);
+
+	)}
 
 localSecureApp.post('/keys', function (req, res){
 
@@ -158,13 +167,18 @@ localSecureApp.post('/keys', function (req, res){
 
 	redisClient.set('key_' + name, 0, redis.print);
 
-	twilioClient.messages.create({  
-			from: "+14156914520",
-			to: "+34626292957",
-			body: "Somebody wants to use your device, go online to allow or not"
-		}, function(err, message) { 
-			console.log(message.sid); 
-		});
+	redisClient.get('admin_phone', function (err, item) {
+		if (item) {
+			twilioClient.messages.create({  
+				from: "+14156914520",
+				to: item,
+				body: "Somebody wants to use your device, go online to allow or not"
+			}, function(err, message) { 
+				console.log(message.sid); 
+			});
+		}
+	});
+	
 
 	res.send(200, {message : "everything is ok"});
 });
