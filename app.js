@@ -68,7 +68,7 @@ function security (req,res, next) {
 	var challenge = req.query.challenge;
 	var user = req.query.user;
 
-	redisClient.get('user_session_' + name, function (err, item) {
+	redisClient.get('user_session_' + user, function (err, item) {
 		if (item == challenge) next();
 		else res.send(403);
 	});
