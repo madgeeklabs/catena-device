@@ -37,21 +37,24 @@ var options = {
 var secureServer = https.createServer(options, localSecureApp);
 secureServer.listen(HTTPS_PORT);
 
-localSecureApp.get('/', function (req, res){
+localSecureApp.get('/bon', function (req, res){
 	on.writeSync(1); // 1 = on, 0 = off :)
 	console.log('on pressed');
 	setTimeout(function () {
 		on.writeSync(0);
 		console.log('on depressed');
-
-		off.writeSync(1);
-		console.log('off pressed');
-		setTimeout(function () {
-			off.writeSync(0);
-			console.log('off depressed');
-
-		}, 1000);
 	}, 1000);
     
-	res.send('local hello world :D');
+	res.send('B on');
+});
+
+localSecureApp.get('/boff', function (req, res){
+	off.writeSync(1); // 1 = on, 0 = off :)
+	console.log('off pressed');
+	setTimeout(function () {
+		off.writeSync(0);
+		console.log('off depressed');
+	}, 1000);
+    
+	res.send('B off');
 });
