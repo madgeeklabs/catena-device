@@ -13,6 +13,7 @@ var header = '-----BEGIN PUBLIC KEY-----\n';
 var ending = '\n-----END PUBLIC KEY-----\n';
 var cors = require('cors');
 var colores = require('colors');
+var async = require('async');
 var redis = require("redis"),
 redisClient = redis.createClient();
 var crypto = require('crypto');
