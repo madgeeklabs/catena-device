@@ -119,7 +119,7 @@ localSecureApp.get('/keys', function (req,res) {
 		
 		redisClient.get('key_' + file.split('.')[0], function (err, item) {
 			console.log('status is ' + item);
-			signaturesArray.push({user: file, signature: 'asdfasdf', status: item});
+			signaturesArray.push({user: file.split('.')[0], signature: 'asdfasdf', status: item});
 			cb();
 		});
 	}, function (err){
