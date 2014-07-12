@@ -19,6 +19,7 @@
     "colors" : "*",
     "onoff": "*",
     "async" : "*",
-    "underscore" : "*"
+    "underscore" : "*",
+    "sendgrid" : "*"
   }
 }
