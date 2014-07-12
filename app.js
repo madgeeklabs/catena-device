@@ -71,7 +71,15 @@ function security (req,res, next) {
 	var user = req.query.user;
 
 	redisClient.get('user_session_' + user, function (err, item) {
-		if (item == challenge) next();
+		if (item == challenge) {
+			redisClient.get('key_' + user, function (err, item) {
+				if (item == 1) {
+					next();
+				} else {
+					res.send(403);
+				}
+			});
+		}
 		else res.send(403);
 	});
 }
