@@ -150,7 +150,7 @@ localSecureApp.post('/admin', function (req, res){
 	redisClient.set('admin_phone', phone, redis.print);
 	redisClient.set('admin_email', email, redis.print);
 
-	)}
+});
 
 localSecureApp.post('/keys', function (req, res){
 
