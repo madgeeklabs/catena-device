@@ -80,13 +80,17 @@ localSecureApp.get('/keys', function (req,res) {
 
 	var signaturesArray = [];
 
-	files.forEach(function (file) {
-		signaturesArray.push({user: file, signature: 'asdfasdf'});
+	async.each(files, function (file, cb) {
+		
 		redisClient.get('key_' + file.split('.')[0], function (err, item) {
 			console.log('status is ' + item);
+			signaturesArray.push({user: file, signature: 'asdfasdf', status: item});
+			cb();
 		});
+	}, function (err){
+		res.send(signaturesArray);
 	});
-
+	
 	res.send(signaturesArray);
 });
 
