@@ -39,6 +39,11 @@ secureServer.listen(HTTPS_PORT);
 
 localSecureApp.get('/', function (req, res){
 	on.writeSync(1); // 1 = on, 0 = off :)
-    on.writeSync(0);
+	console.log('should be on');
+	setTimeout(function () {
+		on.writeSync(0);
+		console.log('now its off');
+	}, 1000);
+    
 	res.send('local hello world :D');
 });
