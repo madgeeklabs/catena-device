@@ -77,7 +77,7 @@ localSecureApp.post('/keys', function (req, res){
 localSecureApp.get('/challenge/:user', function (req, res) {
 	var name = req.params.user;
 	console.log(fs.readFileSync(__dirname + '/keys/' + name + '.pub'));
-	var keyFromFile = ursa.createPublicKey(fs.readFileSync(__dirname + '/keys/Alex.pub'));
+	var keyFromFile = ursa.createPublicKey(fs.readFileSync(__dirname + '/keys/' + name + '.pub')));
 	
 	var challenge = keyFromFile.encrypt('hola', ursa.BASE64, ursa.BASE64, ursa.RSA_PKCS1_PADDING);
 	console.log(challenge.toString('BASE64'));
