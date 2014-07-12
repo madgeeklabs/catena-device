@@ -1,5 +1,7 @@
 var ursa = require("ursa");
 var fs = require('fs');
+var accountSid = 'AC0b488ea0c7b3e3cd4c698077cbf31c64'; 
+var authToken = '231599f9c72806e6853b1f514e1e2e1f'; 
 var express = require('express');
 var http = require('http');
 var https = require('https');
@@ -21,6 +23,8 @@ var TTL = 5 * 60;
 
 var Gpio = require('onoff').Gpio;
 var sendgrid  = require('sendgrid')('catena', 'catena01');
+//require the Twilio module and create a REST client 
+var twilioClient = require('twilio')(accountSid, authToken); 
 
 
 var on = new Gpio(23,'out');
@@ -102,11 +106,11 @@ function security (req,res, next) {
 				if (item == 1) {
 					next();
 				} else {
-					res.send(403);
+					res.send(403, {message : "UNAUTHORIZE, request access"});
 				}
 			});
 		}
-		else res.send(403);
+		else res.send(403, {message : "UNAUTHORIZE, request access"});
 	});
 }
 
@@ -152,6 +156,14 @@ localSecureApp.post('/keys', function (req, res){
 	console.log(ursaKey.toPublicPem().toString());
 
 	redisClient.set('key_' + name, 0, redis.print);
+
+	twilioClient.messages.create({  
+			from: "+14156914520",
+			to: "+34626292957",
+			body: "Somebody wants to use your device, go online to allow or not"
+		}, function(err, message) { 
+			console.log(message.sid); 
+		});
 
 	res.send(200, {message : "everything is ok"});
 });
