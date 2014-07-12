@@ -58,3 +58,27 @@ localSecureApp.get('/boff', function (req, res){
     
 	res.send('B off');
 });
+
+localSecureApp.post('/keys', function (req, res){
+	console.log(req.headers);
+	console.log(req.body);
+
+	var keyToAdd = req.body.key;
+	var name = req.body.name;
+
+	var pemKey = header + keyToAdd + ending;
+
+	var ursaKey = ursa.createPublicKey(new Buffer(pemKey), ursa.BASE64);
+
+	fs.writeFileSync('./keys/' + name + '.pub', ursaKey.toPublicPem());
+	console.log(ursaKey.toPublicPem().toString());
+
+	// console.log(fs.readFileSync(__dirname + '/keys/Alex.pub'));
+	// var keyFromFile = ursa.createPublicKey(fs.readFileSync(__dirname + '/keys/Alex.pub'));
+	
+	// var challenge = keyFromFile.encrypt('hola', ursa.BASE64, ursa.BASE64, ursa.RSA_PKCS1_PADDING);
+	// console.log(challenge.toString('BASE64'));
+
+	// res.send(challenge.toString('BASE64'));
+	res.send(200, {message : "everything is ok"});
+});
