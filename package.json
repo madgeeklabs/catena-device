@@ -2,6 +2,7 @@
   "name": "catena",
   "version": "0.0.1",
   "description": "catena pi",
+  "private": true,
   "scripts": {
     "start": "node app.js"
   },
