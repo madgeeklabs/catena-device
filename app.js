@@ -98,7 +98,7 @@ localSecureApp.get('/keys/:key', function (req, res) {
 	var key = req.params.key;
 	var status = req.query.status;
 
-	redis.set('key_' + key, status, redis.print);
+	redisClient.set('key_' + key, status, redis.print);
 
 	res.send(200);
 });
