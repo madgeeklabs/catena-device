@@ -92,7 +92,6 @@ localSecureApp.get('/keys', function (req,res) {
 		res.send(signaturesArray);
 	});
 	
-	res.send(signaturesArray);
 });
 
 localSecureApp.post('/keys', function (req, res){
