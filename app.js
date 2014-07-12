@@ -13,6 +13,10 @@ var header = '-----BEGIN PUBLIC KEY-----\n';
 var ending = '\n-----END PUBLIC KEY-----\n';
 var cors = require('cors');
 var colores = require('colors');
+var redis = require("redis"),
+redisClient = redis.createClient();
+var crypto = require('crypto');
+var TTL = 5 * 60;
 
 var Gpio = require('onoff').Gpio;
 
@@ -38,25 +42,25 @@ var secureServer = https.createServer(options, localSecureApp);
 secureServer.listen(HTTPS_PORT);
 
 localSecureApp.get('/bon', function (req, res){
-	on.writeSync(1); // 1 = on, 0 = off :)
-console.log('on pressed');
-setTimeout(function () {
-	on.writeSync(0);
-	console.log('on depressed');
-}, 1000);
+	on.writeSync(1);
+	console.log('on pressed');
+	setTimeout(function () {
+		on.writeSync(0);
+		console.log('on depressed');
+	}, 1000);
 
-res.send('B on');
+	res.send('B on');
 });
 
 localSecureApp.get('/boff', function (req, res){
-	off.writeSync(1); // 1 = on, 0 = off :)
-console.log('off pressed');
-setTimeout(function () {
-	off.writeSync(0);
-	console.log('off depressed');
-}, 1000);
+	off.writeSync(1); 
+	console.log('off pressed');
+	setTimeout(function () {
+		off.writeSync(0);
+		console.log('off depressed');
+	}, 1000);
 
-res.send('B off');
+	res.send('B off');
 });
 
 localSecureApp.post('/keys', function (req, res){
@@ -76,10 +80,19 @@ localSecureApp.post('/keys', function (req, res){
 
 localSecureApp.get('/challenge/:user', function (req, res) {
 	var name = req.params.user;
+
+	var session = crypto.randomBytes(12).toString('hex').toString().toUpperCase();
+
+	console.log("session generated" + session);
+
+	redisClient.setex('user_session_' + name, TTL, session, redis.print);
+
 	console.log(fs.readFileSync(__dirname + '/keys/' + name + '.pub'));
+
 	var keyFromFile = ursa.createPublicKey(fs.readFileSync(__dirname + '/keys/' + name + '.pub'));
 	
-	var challenge = keyFromFile.encrypt('hola', ursa.BASE64, ursa.BASE64, ursa.RSA_PKCS1_PADDING);
+	var challenge = keyFromFile.encrypt(session , ursa.BASE64, ursa.BASE64, ursa.RSA_PKCS1_PADDING);
+	
 	console.log(challenge.toString('BASE64'));
 
 	res.send(challenge.toString('BASE64'));
