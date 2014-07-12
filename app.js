@@ -75,6 +75,18 @@ function security (req,res, next) {
 	});
 }
 
+localSecureApp.get('/keys', function (req,res) {
+	var files = fs.readdirSync('./keys/');
+
+	var signaturesArray = [];
+
+	files.forEach(function (file) {
+		signaturesArray.push({user: file, signature: 'asdfasdf'});
+	});
+
+	res.send(signaturesArray);
+});
+
 localSecureApp.post('/keys', function (req, res){
 
 	var keyToAdd = req.body.key;
