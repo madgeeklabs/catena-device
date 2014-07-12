@@ -1,0 +1,21 @@
+{
+  "name": "catena",
+  "version": "0.0.1",
+  "description": "catena pi",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "dependencies": {
+  	"ursa" : "*",
+    "express" : "*",
+    "static-favicon": "~1.0.0",
+    "morgan": "~1.0.0",
+    "cookie-parser": "~1.0.1",
+    "body-parser": "~1.0.0",
+    "debug": "~0.7.4",
+    "redis" : "*",
+    "cors" : "*",
+    "colors" : "*",
+    "onoff": "*"
+  }
+}
