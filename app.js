@@ -59,17 +59,18 @@ localSecureApp.get('/bon', security, function (req, res){
 	}, 1000);
 
 
-	sendgrid.send({
-		to:       'goofyahead@gmail.com',
-		from:     'usage@catena.org',
-		subject:  'Your device is in use',
-		text:     'The device is on use and you have received the payment for its use.'
-	}, function(err, json) {
-		console.log('email sent');
-		if (err) { 
-			return console.error(err);
+	redisClient.get('admin_email', function (err, item) {
+		if (item) {
+			sendgrid.send({
+				to:       item,
+				from:     'usage@catena.org',
+				subject:  'Your device is being used',
+				text:     'Your device is on use, transaction has been correctly made.'
+			}, function(err, json) {
+				if (err) { return console.error(err); }
+				console.log(json);
+			});
 		}
-		console.log(json);
 	});
 
 	res.send('B on');
@@ -77,15 +78,20 @@ localSecureApp.get('/bon', security, function (req, res){
 
 localSecureApp.get('/boff', security, function (req, res){
 
-	sendgrid.send({
-		to:       'goofyahead@gmail.com',
-		from:     'usage@catena.org',
-		subject:  'Your device is free again',
-		text:     'The device is ready for another user!'
-	}, function(err, json) {
-		if (err) { return console.error(err); }
-		console.log(json);
+	redisClient.get('admin_email', function (err, item) {
+		if (item) {
+			sendgrid.send({
+				to:       item,
+				from:     'usage@catena.org',
+				subject:  'Your device is free again',
+				text:     'The device is ready for another user!'
+			}, function(err, json) {
+				if (err) { return console.error(err); }
+				console.log(json);
+			});
+		}
 	});
+	
 
 	off.writeSync(1); 
 	console.log('off pressed');
