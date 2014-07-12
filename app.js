@@ -39,6 +39,7 @@ localSecureApp.use(bodyParser.json());
 localSecureApp.use(bodyParser.urlencoded());
 localSecureApp.use(cookieParser());
 localSecureApp.use(cors());
+localSecureApp.use(express.static(__dirname + '/public'));
 
 var options = {
 	key: fs.readFileSync('./keys-key.pem'),
