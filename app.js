@@ -130,7 +130,7 @@ localSecureApp.get('/keys', function (req,res) {
 
 localSecureApp.get('/keys/:key', function (req, res) {
 	var key = req.params.key;
-	var status = req.query.status;
+	var status = parseInt(req.query.status);
 
 	redisClient.set('key_' + key, status, redis.print);
 
