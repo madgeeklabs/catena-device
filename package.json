@@ -17,6 +17,8 @@
     "redis" : "*",
     "cors" : "*",
     "colors" : "*",
-    "onoff": "*"
+    "onoff": "*",
+    "async" : "*",
+    "underscore" : "*"
   }
 }

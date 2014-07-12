@@ -82,6 +82,9 @@ localSecureApp.get('/keys', function (req,res) {
 
 	files.forEach(function (file) {
 		signaturesArray.push({user: file, signature: 'asdfasdf'});
+		redis.get('key_' + file, function (err, item) {
+			console.log('status is ' + item);
+		});
 	});
 
 	res.send(signaturesArray);
@@ -97,7 +100,10 @@ localSecureApp.post('/keys', function (req, res){
 	var ursaKey = ursa.createPublicKey(new Buffer(pemKey), ursa.BASE64);
 
 	fs.writeFileSync('./keys/' + name + '.pub', ursaKey.toPublicPem());
+
 	console.log(ursaKey.toPublicPem().toString());
+
+	redisClient.set('key_' + name, -1, redis.print);
 
 	res.send(200, {message : "everything is ok"});
 });
