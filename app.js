@@ -20,7 +20,7 @@ var on = new Gpio(23,'out');
 var off = new Gpio(24,'out');
 
 var corsOptions = {
-  origin: 'http://localhost:9000'
+	origin: 'http://localhost:9000'
 };
 
 localSecureApp.use(favicon());
@@ -39,29 +39,27 @@ secureServer.listen(HTTPS_PORT);
 
 localSecureApp.get('/bon', function (req, res){
 	on.writeSync(1); // 1 = on, 0 = off :)
-	console.log('on pressed');
-	setTimeout(function () {
-		on.writeSync(0);
-		console.log('on depressed');
-	}, 1000);
-    
-	res.send('B on');
+console.log('on pressed');
+setTimeout(function () {
+	on.writeSync(0);
+	console.log('on depressed');
+}, 1000);
+
+res.send('B on');
 });
 
 localSecureApp.get('/boff', function (req, res){
 	off.writeSync(1); // 1 = on, 0 = off :)
-	console.log('off pressed');
-	setTimeout(function () {
-		off.writeSync(0);
-		console.log('off depressed');
-	}, 1000);
-    
-	res.send('B off');
+console.log('off pressed');
+setTimeout(function () {
+	off.writeSync(0);
+	console.log('off depressed');
+}, 1000);
+
+res.send('B off');
 });
 
 localSecureApp.post('/keys', function (req, res){
-	console.log(req.headers);
-	console.log(req.body);
 
 	var keyToAdd = req.body.key;
 	var name = req.body.name;
@@ -73,12 +71,21 @@ localSecureApp.post('/keys', function (req, res){
 	fs.writeFileSync('./keys/' + name + '.pub', ursaKey.toPublicPem());
 	console.log(ursaKey.toPublicPem().toString());
 
-	// console.log(fs.readFileSync(__dirname + '/keys/Alex.pub'));
-	// var keyFromFile = ursa.createPublicKey(fs.readFileSync(__dirname + '/keys/Alex.pub'));
-	
-	// var challenge = keyFromFile.encrypt('hola', ursa.BASE64, ursa.BASE64, ursa.RSA_PKCS1_PADDING);
-	// console.log(challenge.toString('BASE64'));
-
-	// res.send(challenge.toString('BASE64'));
 	res.send(200, {message : "everything is ok"});
 });
+
+localSecureApp.get('/challenge/:user', function (req, res) {
+	var name = req.params.user;
+	console.log(fs.readFileSync(__dirname + '/keys/' + name + '.pub'));
+	var keyFromFile = ursa.createPublicKey(fs.readFileSync(__dirname + '/keys/Alex.pub'));
+	
+	var challenge = keyFromFile.encrypt('hola', ursa.BASE64, ursa.BASE64, ursa.RSA_PKCS1_PADDING);
+	console.log(challenge.toString('BASE64'));
+
+	res.send(challenge.toString('BASE64'));
+});
+
+
+
+
+
