@@ -52,7 +52,8 @@ localSecureApp.get('/bon', function (req, res){
 	res.send('B on');
 });
 
-localSecureApp.get('/boff', function (req, res){
+localSecureApp.get('/boff', security, function (req, res){
+
 	off.writeSync(1); 
 	console.log('off pressed');
 	setTimeout(function () {
@@ -62,6 +63,16 @@ localSecureApp.get('/boff', function (req, res){
 
 	res.send('B off');
 });
+
+function security (req,res, next) {
+	var challenge = req.query.challenge;
+	var user = req.query.user;
+
+	redisClient.get('user_session_' + name, function (err, item) {
+		if (item == challenge) next();
+		else res.send(403);
+	});
+}
 
 localSecureApp.post('/keys', function (req, res){
 
