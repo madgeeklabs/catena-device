@@ -151,7 +151,7 @@ localSecureApp.post('/keys', function (req, res){
 
 	console.log(ursaKey.toPublicPem().toString());
 
-	redisClient.set('key_' + name, -1, redis.print);
+	redisClient.set('key_' + name, 0, redis.print);
 
 	res.send(200, {message : "everything is ok"});
 });
