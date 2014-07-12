@@ -39,9 +39,10 @@ var options = {
 };
 
 var secureServer = https.createServer(options, localSecureApp);
+
 secureServer.listen(HTTPS_PORT);
 
-localSecureApp.get('/bon', function (req, res){
+localSecureApp.get('/bon', security, function (req, res){
 	on.writeSync(1);
 	console.log('on pressed');
 	setTimeout(function () {
