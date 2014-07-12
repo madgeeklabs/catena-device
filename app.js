@@ -76,6 +76,15 @@ function security (req,res, next) {
 	});
 }
 
+localSecureApp.post('keys/:key', function (err, item) {
+	var key = req.params.key;
+	var status = req.query.status;
+
+	redis.set('key_' + key, status, redis.print);
+
+	res.send(200);
+});
+
 localSecureApp.get('/keys', function (req,res) {
 	var files = fs.readdirSync('./keys/');
 
