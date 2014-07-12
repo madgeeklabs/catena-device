@@ -94,7 +94,7 @@ localSecureApp.get('/keys', function (req,res) {
 	
 });
 
-localSecureApp.get('keys/:key', function (err, item) {
+localSecureApp.get('/keys/:key', function (err, item) {
 	var key = req.params.key;
 	var status = req.query.status;
 
