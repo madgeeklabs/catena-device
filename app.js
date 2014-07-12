@@ -119,7 +119,7 @@ localSecureApp.get('/keys', function (req,res) {
 		
 		redisClient.get('key_' + file.split('.')[0], function (err, item) {
 			console.log('status is ' + item);
-			signaturesArray.push({user: file.split('.')[0], signature: 'asdfasdf', status: item});
+			signaturesArray.push({user: file.split('.')[0], signature: 'asdfasdf', status: parseInt(item)});
 			cb();
 		});
 	}, function (err){
@@ -157,6 +157,7 @@ localSecureApp.post('/keys', function (req, res){
 });
 
 localSecureApp.get('/challenge/:user', function (req, res) {
+
 	var name = req.params.user;
 
 	var session = crypto.randomBytes(12).toString('hex').toString().toUpperCase();
