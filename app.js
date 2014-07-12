@@ -82,7 +82,7 @@ localSecureApp.get('/keys', function (req,res) {
 
 	files.forEach(function (file) {
 		signaturesArray.push({user: file, signature: 'asdfasdf'});
-		redisClient.get('key_' + file, function (err, item) {
+		redisClient.get('key_' + file.split('.')[0], function (err, item) {
 			console.log('status is ' + item);
 		});
 	});
