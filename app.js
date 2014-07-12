@@ -34,7 +34,7 @@ localSecureApp.use(favicon());
 localSecureApp.use(bodyParser.json());
 localSecureApp.use(bodyParser.urlencoded());
 localSecureApp.use(cookieParser());
-localSecureApp.use(cors(corsOptions));
+localSecureApp.use(cors());
 
 var options = {
 	key: fs.readFileSync('./keys-key.pem'),
