@@ -1,0 +1,251 @@
+<div id="stats"> </div> <div> <div style="position: relative; margin-left: 100px; font-size: 90px"> {{money}} <span class="glyphicon glyphicon-euro" style="color:blue"></span> </div> <div id="chart"> </div> </div> <style>#stats {
+  font: 10px sans-serif;
+}
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.bar {
+  fill: steelblue;
+}
+
+.x.axis path {
+  display: none;
+}</style> <script>var margin = {top: 20, right: 20, bottom: 30, left: 40},
+    width = 960 - margin.left - margin.right,
+    height = 500 - margin.top - margin.bottom;
+
+var x0 = d3.scale.ordinal()
+    .rangeRoundBands([0, width], .1);
+
+var x1 = d3.scale.ordinal();
+
+var y = d3.scale.linear()
+    .range([height, 0]);
+
+var color = d3.scale.ordinal()
+    .range(["#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56", "#d0743c", "#ff8c00"]);
+
+var xAxis = d3.svg.axis()
+    .scale(x0)
+    .orient("bottom");
+
+var yAxis = d3.svg.axis()
+    .scale(y)
+    .orient("left")
+    .tickFormat(d3.format(".2s"));
+
+var svg = d3.select("#stats").append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+d3.csv("data.csv", function(error, data) {
+  var ageNames = d3.keys(data[0]).filter(function(key) { return key !== "State"; });
+
+  data.forEach(function(d) {
+    d.ages = ageNames.map(function(name) { return {name: name, value: +d[name]}; });
+  });
+
+  x0.domain(data.map(function(d) { return d.State; }));
+  x1.domain(ageNames).rangeRoundBands([0, x0.rangeBand()]);
+  y.domain([0, d3.max(data, function(d) { return d3.max(d.ages, function(d) { return d.value; }); })]);
+
+  svg.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + height + ")")
+      .call(xAxis);
+
+  svg.append("g")
+      .attr("class", "y axis")
+      .call(yAxis)
+    .append("text")
+      .attr("transform", "rotate(-90)")
+      .attr("y", 6)
+      .attr("dy", ".71em")
+      .style("text-anchor", "end")
+      .text("Times");
+
+  var state = svg.selectAll(".state")
+      .data(data)
+    .enter().append("g")
+      .attr("class", "g")
+      .attr("transform", function(d) { return "translate(" + x0(d.State) + ",0)"; });
+
+  state.selectAll("rect")
+      .data(function(d) { return d.ages; })
+    .enter().append("rect")
+      .attr("width", x1.rangeBand())
+      .attr("x", function(d) { return x1(d.name); })
+      .attr("y", function(d) { return y(d.value); })
+      .attr("height", function(d) { return height - y(d.value); })
+      .style("fill", function(d) { return color(d.name); });
+
+  var legend = svg.selectAll(".legend")
+      .data(ageNames.slice().reverse())
+    .enter().append("g")
+      .attr("class", "legend")
+      .attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
+
+  legend.append("rect")
+      .attr("x", width - 18)
+      .attr("width", 18)
+      .attr("height", 18)
+      .style("fill", color);
+
+  legend.append("text")
+      .attr("x", width - 24)
+      .attr("y", 9)
+      .attr("dy", ".35em")
+      .style("text-anchor", "end")
+      .text(function(d) { return d; });
+
+});</script> <style>#chart {
+  background: #222;
+  font: 10px sans-serif;
+  margin: auto;
+  position: relative;
+  width: 640px;
+}
+
+
+#credit {
+  position: absolute;
+  right: 4px;
+  bottom: 4px;
+  color: #ddd;
+}
+
+#credit a {
+  color: #fff;
+  font-weight: bold;
+}</style> <script>(function(){
+
+var width = 960/1.5,
+    height = 800/1.5,
+    radius = Math.min(width, height) / 1.9,
+    spacing = .08;
+
+var color = d3.scale.linear()
+    .range(["hsl(-180,50%,50%)", "hsl(180,50%,50%)"])
+    .interpolate(interpolateHsl);
+
+var arc = d3.svg.arc()
+    .startAngle(0.0)
+    .endAngle(function(d) { return (d.value * 2 * Math.PI); })
+    .innerRadius(function(d) { return d.index * radius; })
+    .outerRadius(function(d) { return (d.index + spacing) * radius; });
+var formatter = d3.format(".2");
+var svg = d3.select("#chart").append("svg")
+    .attr("width", width)
+    .attr("height", height)
+  .append("g")
+    .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+    
+    var gradient = svg
+    .selectAll("linearGradient").data(fields).enter()
+    .append("linearGradient")
+    .attr("y1", "0%")
+    .attr("y2", "0%")
+    .attr("x1", "0%")
+    .attr("x2", "100%")
+    .attr("gradientUnits", "objectBoundingBox")
+    .attr('id', function(d){return "gradient-"+d.index*10})
+    gradient.append("stop")
+    .attr("offset", "0%")
+    .attr("stop-opacity", "1")
+    .attr("stop-color", function(d){return color(d.index);});
+    gradient.append("stop")
+    .attr("offset", function(d){return 30+"%"})
+    .attr("stop-opacity", ".5")
+    .attr("stop-color", function(d){return color(d.index);});
+    gradient.append("stop")
+    .attr("offset",  function(d){return 80+"%"})
+    .attr("stop-opacity", "0.7")
+    .attr("stop-color", function(d){return color(d.index);});
+    
+    
+    var field = svg.selectAll("g")
+    .data(fields)
+    .enter().append("g");
+
+    field.append("path");
+    field.append("rect");
+    field.append("text");   
+        
+    d3.transition().duration(0).each(tick);
+    d3.select(self.frameElement).style("height", height + "px");
+
+    function tick() {
+        field = field
+      .each(function(d) { this._value = d.value; })
+      .data(fields)
+      .each(function(d) { d.previousValue = this._value; });
+
+  field.select("path")
+    .transition()
+      .ease("linear")
+      .attrTween("d", arcTween)
+      .style("opacity", function(d) { return .7; })
+      .style("fill", function(d) { return color(d.index); });
+
+  field.select("text")
+    .attr("x", function(d) { return -( ((fields().length /10) + spacing) * radius) - 50  ; })
+    .attr("y",function(d) { return -(((d.index + spacing) * radius)) + 20; })
+    .text(function(d) { return formatter(d.value*100 ); })
+    .style("font-size","15px")
+    .transition()
+      .ease("linear")
+      .attr("transform", function(d) {
+        return "rotate(0)"
+            + "translate(0,0)"
+            + "rotate(0)"
+      });
+
+
+    field.select("rect")
+    .attr("x", function(d) { return  -( ((fields().length /10) + spacing) * radius) - 100  ; })
+    .attr("y",function(d) { return -(((d.index + spacing) * radius)); })
+    .attr("height",function(d) { return ((d.index + spacing) * radius)-(d.index * radius)})
+    .attr("width",function(d) { return  ((fields().length /10) + spacing) * radius + 90 ;})
+    .text(function(d) { return formatter(d.value * 100); })
+    .attr("fill", function(d){return "url(#gradient-"+ d.index*10 +")"})
+    .transition()
+    .attr("transform", function(d) {
+        return "rotate(0)"
+        + "translate(0,0)"
+        + "rotate(0)"
+    });
+    
+}
+tick();
+function arcTween(d) {
+  var i = d3.interpolateNumber(d.previousValue, d.value);
+  return function(t) { d.value = i(t); return arc(d); };
+}
+
+function fields() {
+   return [
+    {index: .1,  value: .40},
+    {index: .2,  value: .50},
+    {index: .3,  value: .160},
+    {index: .4,  value: .04},
+    {index: .5,  value: .20},
+    {index: .6,  value: .45}
+  ];
+}
+
+
+// Avoid shortest-path interpolation.
+function interpolateHsl(a, b) {
+  var i = d3.interpolateString(a, b);
+  return function(t) {
+    return d3.hsl(i(t));
+  };
+}
+})();</script>
