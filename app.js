@@ -76,6 +76,10 @@ localSecureApp.get('/bon', security, function (req, res){
 	res.send('B on');
 });
 
+localSecureApp.get('/stats', function (req, res) {
+	res.send({money : 14});
+})
+
 localSecureApp.get('/boff', security, function (req, res){
 
 	redisClient.get('admin_email', function (err, item) {
