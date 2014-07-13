@@ -191,7 +191,7 @@ localSecureApp.post('/keys', function (req, res){
 			twilioClient.messages.create({  
 				from: "+14156914520",
 				to: item,
-				body: "Somebody wants to use your device, go online to allow or not"
+				body: "Somebody wants to use your device, https://192.168.0.111/#/users"
 			}, function(err, message) { 
 				console.log(message.sid); 
 			});
