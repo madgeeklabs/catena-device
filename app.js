@@ -76,7 +76,7 @@ localSecureApp.get('/bon', security, function (req, res){
 	res.send('B on');
 });
 
-localhost.get('/update/:amount', function (req, res) {
+localSecureApp.get('/update/:amount', function (req, res) {
 	var transaction = req.params.amount;
 	redisClient.incrby('amount', transaction, redis.print);
 	res.send(200);
