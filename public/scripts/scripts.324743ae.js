@@ -1,1 +1,208 @@
-"use strict";angular.module("catenaApp",["ngAnimate","ngCookies","ngResource","ngRoute","ngSanitize","ngTouch"]).config(["$routeProvider",function(a){a.when("/",{templateUrl:"views/main.html",controller:"MainCtrl"}).when("/about",{templateUrl:"views/about.html",controller:"AboutCtrl"}).when("/users",{templateUrl:"views/users.html",controller:"UsersCtrl"}).when("/settings",{templateUrl:"views/settings.html",controller:"SettingsCtrl"}).when("/stats",{templateUrl:"views/stats.html",controller:"StatsCtrl"}).otherwise({redirectTo:"/"})}]),angular.module("catenaApp").controller("MainCtrl",["$scope",function(a){a.awesomeThings=["HTML5 Boilerplate","AngularJS","Karma"]}]),angular.module("catenaApp").factory("Keys",["$resource",function(a){var b="https://192.168.0.111",c="/keys";c=b+c;var d=a(c,{},{get:{method:"GET",isArray:!0}});return d}]).factory("Devices",["$resource",function(a){var b="http://www.madgeeklabs.com:3000",c="/devices";c=b+c;var d=a(c,{},{get:{method:"GET",isArray:!0}});return d}]).factory("Device",["$resource",function(a){var b="http://www.madgeeklabs.com:3000",c="/devices/:id";c=b+c;var d=a(c,{id:"@id"},{});return d}]).factory("DeviceRasp",["$resource",function(a){var b="https://192.168.0.111",c="/admin";c=b+c;var d=a(c,{},{});return d}]).factory("Stats",["$resource",function(a){var b="https://192.168.0.111",c="/stats";c=b+c;var d=a(c,{},{get:{method:"GET"}});return d}]).factory("Toggle",["$resource",function(a){var b="https://192.168.0.111",c="/keys/:userId";c=b+c;var d=a(c,{},{get:{method:"GET"}});return d}]).controller("StatsCtrl",function(a,b){a.awesomeThings=["HTML5 Boilerplate","AngularJS","Karma"],a.hello="yeia",console.log("helloooo"),b.get({},function(b){a.money=b.money})}).controller("SettingsCtrl",function(a,b,c){a.awesomeThings=["HTML5 Boilerplate","AngularJS","Karma"],a.hello="yeia",console.log("helloooo"),b.get({id:1},function(b){a.phone=b.phone,a.email=b.email,a.sendSMS=b.sendSMS,a.sendEmail=b.sendEmail,a.price=b.price,a.name=b.name,a.id=b.id,a.url=b.url,a.image=b.image}),a.save=function(){b.save({id:a.id,name:a.name,email:a.email,image:a.image,phone:a.phone,price:a.price,sendEmail:a.sendEmail,sendSMS:a.sendSMS,url:a.url},function(a){console.log("after save"),console.log(a)}),c.save({phone:a.sendSMS?a.phone:"",email:a.sendEmail?a.email:""},function(){})}}).controller("UsersCtrl",function(a,b,c){a.awesomeThings=["HTML5 Boilerplate","AngularJS","Karma"],a.hello="yeia",console.log("helloooo"),b.get(function(b){a.keys=b}),a.toggleAllow=function(a){a.status=a.status?0:1,c.get({userId:a.user,status:a.status},function(){})}}).controller("AboutCtrl",function(a){a.awesomeThings=["HTML5 Boilerplate","AngularJS","Karma"]});
+'use strict';
+/**
+ * @ngdoc overview
+ * @name catenaApp
+ * @description
+ * # catenaApp
+ *
+ * Main module of the application.
+ */
+angular.module('catenaApp', [
+  'ngAnimate',
+  'ngCookies',
+  'ngResource',
+  'ngRoute',
+  'ngSanitize',
+  'ngTouch'
+]).config([
+  '$routeProvider',
+  function ($routeProvider) {
+    $routeProvider.when('/', {
+      templateUrl: 'views/main.html',
+      controller: 'MainCtrl'
+    }).when('/about', {
+      templateUrl: 'views/about.html',
+      controller: 'AboutCtrl'
+    }).when('/users', {
+      templateUrl: 'views/users.html',
+      controller: 'UsersCtrl'
+    }).when('/settings', {
+      templateUrl: 'views/settings.html',
+      controller: 'SettingsCtrl'
+    }).when('/stats', {
+      templateUrl: 'views/stats.html',
+      controller: 'StatsCtrl'
+    }).otherwise({ redirectTo: '/' });
+  }
+]);
+'use strict';
+/**
+ * @ngdoc function
+ * @name catenaApp.controller:MainCtrl
+ * @description
+ * # MainCtrl
+ * Controller of the catenaApp
+ */
+angular.module('catenaApp').controller('MainCtrl', [
+  '$scope',
+  function ($scope) {
+    $scope.awesomeThings = [
+      'HTML5 Boilerplate',
+      'AngularJS',
+      'Karma'
+    ];
+  }
+]);
+'use strict';
+/**
+ * @ngdoc function
+ * @name catenaApp.controller:AboutCtrl
+ * @description
+ * # AboutCtrl
+ * Controller of the catenaApp
+ */
+angular.module('catenaApp').factory('Keys', [
+  '$resource',
+  function ($resource) {
+    var host = 'https://192.168.0.111';
+    var urlApi = '/keys';
+    urlApi = host + urlApi;
+    var resource = $resource(urlApi, {}, {
+        'get': {
+          method: 'GET',
+          isArray: true
+        }
+      });
+    return resource;
+  }
+]).factory('Devices', [
+  '$resource',
+  function ($resource) {
+    var host = 'http://www.madgeeklabs.com:3000';
+    var urlApi = '/devices';
+    urlApi = host + urlApi;
+    var resource = $resource(urlApi, {}, {
+        'get': {
+          method: 'GET',
+          isArray: true
+        }
+      });
+    return resource;
+  }
+]).factory('Device', [
+  '$resource',
+  function ($resource) {
+    var host = 'http://www.madgeeklabs.com:3000';
+    var urlApi = '/devices/:id';
+    urlApi = host + urlApi;
+    var resource = $resource(urlApi, { id: '@id' }, {});
+    return resource;
+  }
+]).factory('DeviceRasp', [
+  '$resource',
+  function ($resource) {
+    var host = 'https://192.168.0.111';
+    var urlApi = '/admin';
+    urlApi = host + urlApi;
+    var resource = $resource(urlApi, {}, {});
+    return resource;
+  }
+]).factory('Stats', [
+  '$resource',
+  function ($resource) {
+    var host = 'https://192.168.0.111';
+    var urlApi = '/stats';
+    urlApi = host + urlApi;
+    var resource = $resource(urlApi, {}, { 'get': { method: 'GET' } });
+    return resource;
+  }
+]).factory('Toggle', [
+  '$resource',
+  function ($resource) {
+    var host = 'https://192.168.0.111';
+    var urlApi = '/keys/:userId';
+    urlApi = host + urlApi;
+    var resource = $resource(urlApi, {}, { 'get': { method: 'GET' } });
+    return resource;
+  }
+]).controller('StatsCtrl', function ($scope, Stats) {
+  $scope.awesomeThings = [
+    'HTML5 Boilerplate',
+    'AngularJS',
+    'Karma'
+  ];
+  $scope.hello = 'yeia';
+  console.log('helloooo');
+  Stats.get({}, function (resp) {
+    $scope.money = resp.money;
+  });
+}).controller('SettingsCtrl', function ($scope, Device, DeviceRasp) {
+  $scope.awesomeThings = [
+    'HTML5 Boilerplate',
+    'AngularJS',
+    'Karma'
+  ];
+  $scope.hello = 'yeia';
+  console.log('helloooo');
+  Device.get({ id: 1 }, function (resp) {
+    $scope.phone = resp.phone;
+    $scope.email = resp.email;
+    $scope.sendSMS = resp.sendSMS;
+    $scope.sendEmail = resp.sendEmail;
+    $scope.price = resp.price;
+    $scope.name = resp.name;
+    $scope.id = resp.id;
+    $scope.url = resp.url;
+    $scope.image = resp.image;
+  });
+  $scope.save = function () {
+    Device.save({
+      id: $scope.id,
+      name: $scope.name,
+      email: $scope.email,
+      image: $scope.image,
+      phone: $scope.phone,
+      price: $scope.price,
+      sendEmail: $scope.sendEmail,
+      sendSMS: $scope.sendSMS,
+      url: $scope.url
+    }, function (resp) {
+      console.log('after save');
+      console.log(resp);
+    });
+    DeviceRasp.save({
+      phone: $scope.sendSMS ? $scope.phone : '',
+      email: $scope.sendEmail ? $scope.email : ''
+    }, function () {
+    });
+  };
+}).controller('UsersCtrl', function ($scope, Keys, Toggle) {
+  $scope.awesomeThings = [
+    'HTML5 Boilerplate',
+    'AngularJS',
+    'Karma'
+  ];
+  $scope.hello = 'yeia';
+  console.log('helloooo');
+  Keys.get(function (results) {
+    $scope.keys = results;
+  });
+  $scope.toggleAllow = function (key) {
+    if (key.status) {
+      key.status = 0;
+    } else {
+      key.status = 1;
+    }
+    Toggle.get({
+      userId: key.user,
+      status: key.status
+    }, function () {
+    });
+  };
+}).controller('AboutCtrl', function ($scope) {
+  $scope.awesomeThings = [
+    'HTML5 Boilerplate',
+    'AngularJS',
+    'Karma'
+  ];
+});
