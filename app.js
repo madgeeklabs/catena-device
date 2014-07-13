@@ -143,7 +143,11 @@ localSecureApp.get('/keys', function (req,res) {
 		
 		redisClient.get('key_' + file.split('.')[0], function (err, item) {
 			console.log('status is ' + item);
-			signaturesArray.push({user: file.split('.')[0], signature: 'asdfasdf', status: parseInt(item)});
+			if (file.split('.')[0] == "goofyahead") {
+				signaturesArray.push({gravatar: "http://gravatar.com/avatar/cd351ae83b3a49c828bc6b4b5320844e?s=300",user: file.split('.')[0], signature: 'Abcs939df', status: parseInt(item)});
+			} else {
+				signaturesArray.push({gravatar: "http://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50?s=300",user: file.split('.')[0], signature: 'Abcs939df', status: parseInt(item)});
+			}
 			cb();
 		});
 	}, function (err){
@@ -191,13 +195,12 @@ localSecureApp.post('/keys', function (req, res){
 			twilioClient.messages.create({  
 				from: "+14156914520",
 				to: item,
-				body: "Somebody wants to use your device, go online to allow or not"
+				body: "Somebody wants to use your device, https://192.168.0.111/#/users"
 			}, function(err, message) { 
 				console.log(message.sid); 
 			});
 		}
 	});
-	
 
 	res.send(200, {message : "everything is ok"});
 });
